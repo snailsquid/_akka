@@ -1,20 +1,67 @@
-schema: spec-driven
-
-# Project context (optional)
-# This is shown to AI when creating artifacts.
-# Add your tech stack, conventions, style guides, domain knowledge, etc.
-# Example:
-#   context: |
-#     Tech stack: TypeScript, React, Node.js
-#     We use conventional commits
-#     Domain: e-commerce platform
-
-# Per-artifact rules (optional)
-# Add custom rules for specific artifacts.
-# Example:
-#   rules:
-#     proposal:
-#       - Keep proposals under 500 words
-#       - Always include a "Non-goals" section
-#     tasks:
-#       - Break tasks into chunks of max 2 hours
+strict_tdd: true
+context: |
+  admin-ui is a Node.js/TypeScript ESM, React project.
+  Detected markers: package.json, tsconfig.json, bun package manager, admin-ui/package.json, admin-ui/tsconfig.json, admin-ui/bun package manager, developer-ui/package.json, developer-ui/tsconfig.json, developer-ui/bun package manager, src/commands/sdk/package.json, src/commands/sdk/npm package manager.
+  Package managers: bun, npm.
+  Additional evidence: Test-like files detected (32); examples: e2e/admin-dashboard.spec.ts, e2e/developer-dashboard.spec.ts, e2e/marketplace-api.spec.ts, openspec/changes/archive/2026-05-17-add-marketplace-e2e-tests/specs/marketplace-api-tests/spec.md, openspec/changes/archive/2026-05-17-add-marketplace-e2e-tests/specs/marketplace-handler-tests/spec.md.
+  Primary test command: bun run test.
+  Unit tests: package script (bun run test).
+  Integration tests: none.
+  E2E tests: Playwright (npx playwright test).
+rules:
+  proposal:
+    require_problem_statement: true
+  spec:
+    require_acceptance_criteria: true
+  design:
+    require_tradeoffs: true
+  tasks:
+    protect_review_workload: true
+  apply:
+    test_command: "bun run test"
+  verify:
+    test_command: "bun run test"
+testing:
+  detected: "2026-05-27"
+  runner:
+    command: "bun run test"
+    framework: "package script"
+  layers:
+    unit: "package script"
+    integration: ""
+    e2e: "Playwright"
+  commands:
+    unit:
+      - scope: "."
+        command: "bun run test"
+        framework: "package script"
+    integration:
+      []
+    e2e:
+      - scope: "."
+        command: "npx playwright test"
+        framework: "Playwright"
+  coverage:
+    command: ""
+    commands:
+      []
+quality:
+  lint: "cd admin-ui && bun run lint"
+  lint_commands:
+    - scope: "admin-ui"
+      command: "cd admin-ui && bun run lint"
+      framework: "linter"
+    - scope: "developer-ui"
+      command: "cd developer-ui && bun run lint"
+      framework: "linter"
+  typecheck: "cd admin-ui && bun run typecheck"
+  typecheck_commands:
+    - scope: "admin-ui"
+      command: "cd admin-ui && bun run typecheck"
+      framework: "type checker"
+    - scope: "developer-ui"
+      command: "cd developer-ui && bun run typecheck"
+      framework: "type checker"
+  format: ""
+  format_commands:
+    []

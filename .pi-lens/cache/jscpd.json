@@ -1,0 +1,368 @@
+{
+  "success": true,
+  "clones": [
+    {
+      "fileA": "developer-ui/developer-ui/src/components/Sidebar.tsx",
+      "startA": 86,
+      "fileB": "developer-ui/developer-ui/src/components/Sidebar.tsx",
+      "startB": 60,
+      "lines": 15,
+      "tokens": 0
+    },
+    {
+      "fileA": "src/admin/static/icons.svg",
+      "startA": 1,
+      "fileB": "src/developer/static/icons.svg",
+      "startB": 1,
+      "lines": 24,
+      "tokens": 0
+    },
+    {
+      "fileA": "developer-ui/src/components/Sidebar.tsx",
+      "startA": 27,
+      "fileB": "developer-ui/developer-ui/src/components/Sidebar.tsx",
+      "startB": 37,
+      "lines": 76,
+      "tokens": 0
+    },
+    {
+      "fileA": "developer-ui/src/components/Sidebar.tsx",
+      "startA": 24,
+      "fileB": "developer-ui/developer-ui/src/components/Sidebar.tsx",
+      "startB": 34,
+      "lines": 12,
+      "tokens": 0
+    },
+    {
+      "fileA": "developer-ui/src/components/Sidebar.tsx",
+      "startA": 36,
+      "fileB": "developer-ui/developer-ui/src/components/Sidebar.tsx",
+      "startB": 47,
+      "lines": 29,
+      "tokens": 0
+    },
+    {
+      "fileA": "developer-ui/src/components/Sidebar.tsx",
+      "startA": 64,
+      "fileB": "developer-ui/developer-ui/src/components/Sidebar.tsx",
+      "startB": 102,
+      "lines": 47,
+      "tokens": 0
+    },
+    {
+      "fileA": "developer-ui/src/components/CommandList.tsx",
+      "startA": 80,
+      "fileB": "developer-ui/src/pages/Dashboard.tsx",
+      "startB": 230,
+      "lines": 19,
+      "tokens": 0
+    },
+    {
+      "fileA": "developer-ui/src/components/CommandList.tsx",
+      "startA": 85,
+      "fileB": "developer-ui/src/pages/Dashboard.tsx",
+      "startB": 243,
+      "lines": 12,
+      "tokens": 0
+    },
+    {
+      "fileA": "admin-ui/src/styles/shared.css",
+      "startA": 1,
+      "fileB": "developer-ui/src/styles/shared.css",
+      "startB": 1,
+      "lines": 71,
+      "tokens": 0
+    },
+    {
+      "fileA": "admin-ui/src/styles/shared.css",
+      "startA": 71,
+      "fileB": "developer-ui/src/styles/shared.css",
+      "startB": 71,
+      "lines": 79,
+      "tokens": 0
+    },
+    {
+      "fileA": "admin-ui/src/styles/shared.css",
+      "startA": 146,
+      "fileB": "developer-ui/src/styles/shared.css",
+      "startB": 155,
+      "lines": 208,
+      "tokens": 0
+    },
+    {
+      "fileA": "admin-ui/src/pages/Dashboard.tsx",
+      "startA": 15,
+      "fileB": "developer-ui/src/pages/Dashboard.tsx",
+      "startB": 20,
+      "lines": 15,
+      "tokens": 0
+    },
+    {
+      "fileA": "admin-ui/src/pages/Dashboard.tsx",
+      "startA": 34,
+      "fileB": "developer-ui/src/pages/Dashboard.tsx",
+      "startB": 35,
+      "lines": 15,
+      "tokens": 0
+    },
+    {
+      "fileA": "admin-ui/src/lib/auth.ts",
+      "startA": 3,
+      "fileB": "developer-ui/src/lib/auth.ts",
+      "startB": 3,
+      "lines": 22,
+      "tokens": 0
+    },
+    {
+      "fileA": "admin-ui/src/lib/api.ts",
+      "startA": 1,
+      "fileB": "developer-ui/src/lib/api.ts",
+      "startB": 1,
+      "lines": 19,
+      "tokens": 0
+    },
+    {
+      "fileA": "admin-ui/src/lib/api.ts",
+      "startA": 22,
+      "fileB": "developer-ui/src/lib/api.ts",
+      "startB": 28,
+      "lines": 14,
+      "tokens": 0
+    },
+    {
+      "fileA": "admin-ui/src/components/Sidebar.tsx",
+      "startA": 34,
+      "fileB": "developer-ui/developer-ui/src/components/Sidebar.tsx",
+      "startB": 44,
+      "lines": 65,
+      "tokens": 0
+    },
+    {
+      "fileA": "admin-ui/src/components/Sidebar.tsx",
+      "startA": 8,
+      "fileB": "developer-ui/src/components/Sidebar.tsx",
+      "startB": 8,
+      "lines": 22,
+      "tokens": 0
+    },
+    {
+      "fileA": "admin-ui/src/components/Sidebar.tsx",
+      "startA": 45,
+      "fileB": "developer-ui/developer-ui/src/components/Sidebar.tsx",
+      "startB": 86,
+      "lines": 16,
+      "tokens": 0
+    },
+    {
+      "fileA": "admin-ui/src/components/Sidebar.tsx",
+      "startA": 59,
+      "fileB": "developer-ui/src/components/Sidebar.tsx",
+      "startB": 63,
+      "lines": 42,
+      "tokens": 0
+    },
+    {
+      "fileA": "admin-ui/src/components/AddSessionForm.tsx",
+      "startA": 11,
+      "fileB": "developer-ui/src/components/CommandForm.tsx",
+      "startB": 30,
+      "lines": 9,
+      "tokens": 0
+    },
+    {
+      "fileA": "src/router/user-service.ts",
+      "startA": 114,
+      "fileB": "src/router/user-service.ts",
+      "startB": 79,
+      "lines": 14,
+      "tokens": 0
+    },
+    {
+      "fileA": "src/router/user-service.ts",
+      "startA": 127,
+      "fileB": "src/router/user-service.ts",
+      "startB": 91,
+      "lines": 20,
+      "tokens": 0
+    },
+    {
+      "fileA": "src/router/user-service.ts",
+      "startA": 230,
+      "fileB": "src/router/user-service.ts",
+      "startB": 81,
+      "lines": 11,
+      "tokens": 0
+    },
+    {
+      "fileA": "src/router/user-service.ts",
+      "startA": 274,
+      "fileB": "src/router/user-service.ts",
+      "startB": 80,
+      "lines": 17,
+      "tokens": 0
+    },
+    {
+      "fileA": "src/router/index.ts",
+      "startA": 131,
+      "fileB": "src/router/index.ts",
+      "startB": 114,
+      "lines": 11,
+      "tokens": 0
+    },
+    {
+      "fileA": "src/gateway/webhook.ts",
+      "startA": 185,
+      "fileB": "src/gateway/webhook.ts",
+      "startB": 166,
+      "lines": 17,
+      "tokens": 0
+    },
+    {
+      "fileA": "src/gateway/waha-client.ts",
+      "startA": 87,
+      "fileB": "src/gateway/waha-client.ts",
+      "startB": 60,
+      "lines": 9,
+      "tokens": 0
+    },
+    {
+      "fileA": "src/db/schema.ts",
+      "startA": 89,
+      "fileB": "src/db/schema.ts",
+      "startB": 71,
+      "lines": 9,
+      "tokens": 0
+    },
+    {
+      "fileA": "src/db/schema.ts",
+      "startA": 130,
+      "fileB": "src/db/schema.ts",
+      "startB": 71,
+      "lines": 9,
+      "tokens": 0
+    },
+    {
+      "fileA": "src/commands/routes.ts",
+      "startA": 71,
+      "fileB": "src/commands/routes.ts",
+      "startB": 53,
+      "lines": 12,
+      "tokens": 0
+    },
+    {
+      "fileA": "src/commands/registry.ts",
+      "startA": 87,
+      "fileB": "src/commands/registry.ts",
+      "startB": 34,
+      "lines": 12,
+      "tokens": 0
+    },
+    {
+      "fileA": "src/commands/registry.ts",
+      "startA": 98,
+      "fileB": "src/commands/registry.ts",
+      "startB": 45,
+      "lines": 10,
+      "tokens": 0
+    },
+    {
+      "fileA": "src/commands/registry.ts",
+      "startA": 219,
+      "fileB": "src/commands/registry.ts",
+      "startB": 163,
+      "lines": 11,
+      "tokens": 0
+    },
+    {
+      "fileA": "src/commands/marketplace.ts",
+      "startA": 208,
+      "fileB": "src/commands/marketplace.ts",
+      "startB": 28,
+      "lines": 7,
+      "tokens": 0
+    },
+    {
+      "fileA": "developer-ui/public/icons.svg",
+      "startA": 1,
+      "fileB": "src/developer/static/icons.svg",
+      "startB": 1,
+      "lines": 24,
+      "tokens": 0
+    },
+    {
+      "fileA": "admin-ui/src/main.tsx",
+      "startA": 1,
+      "fileB": "developer-ui/src/main.tsx",
+      "startB": 1,
+      "lines": 13,
+      "tokens": 0
+    },
+    {
+      "fileA": "admin-ui/src/index.css",
+      "startA": 1,
+      "fileB": "developer-ui/src/index.css",
+      "startB": 1,
+      "lines": 111,
+      "tokens": 0
+    },
+    {
+      "fileA": "admin-ui/src/App.tsx",
+      "startA": 1,
+      "fileB": "developer-ui/src/App.tsx",
+      "startB": 1,
+      "lines": 28,
+      "tokens": 0
+    },
+    {
+      "fileA": "admin-ui/src/App.tsx",
+      "startA": 28,
+      "fileB": "developer-ui/src/App.tsx",
+      "startB": 28,
+      "lines": 29,
+      "tokens": 0
+    },
+    {
+      "fileA": "admin-ui/src/App.css",
+      "startA": 1,
+      "fileB": "developer-ui/src/App.css",
+      "startB": 1,
+      "lines": 184,
+      "tokens": 0
+    },
+    {
+      "fileA": "admin-ui/public/icons.svg",
+      "startA": 1,
+      "fileB": "src/developer/static/icons.svg",
+      "startB": 1,
+      "lines": 24,
+      "tokens": 0
+    },
+    {
+      "fileA": "drizzle/0000_stale_black_bird.sql",
+      "startA": 85,
+      "fileB": "drizzle/0000_stale_black_bird.sql",
+      "startB": 29,
+      "lines": 6,
+      "tokens": 0
+    },
+    {
+      "fileA": "admin-ui/index.html",
+      "startA": 6,
+      "fileB": "developer-ui/index.html",
+      "startB": 6,
+      "lines": 8,
+      "tokens": 0
+    },
+    {
+      "fileA": "admin-ui/eslint.config.js",
+      "startA": 1,
+      "fileB": "developer-ui/eslint.config.js",
+      "startB": 1,
+      "lines": 22,
+      "tokens": 0
+    }
+  ],
+  "duplicatedLines": 1404,
+  "totalLines": 8423,
+  "percentage": 16.67
+}

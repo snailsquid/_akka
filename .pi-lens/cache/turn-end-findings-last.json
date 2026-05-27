@@ -1,0 +1,4 @@
+{
+  "signature": "src/gateway/session-manager.ts::Unresolved from this turn — src/gateway/session-manager.ts:\n🔴 STOP — 1 issue(s) must be fixed:\n  L2: 'eq' is declared but its value is never read.\n    💡 Fix: Remove the unused declaration or rename with '_' prefix if intentionally unused.",
+  "sessionId": "lens-mpm58od8-7973b803"
+}
