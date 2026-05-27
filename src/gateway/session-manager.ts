@@ -1,15 +1,14 @@
 import { db, schema } from "../db";
-import { eq } from "drizzle-orm";
 import { WahaClient } from "./waha-client";
 
 const wahaApiKey = process.env.WAHA_API_KEY;
 const webhookUrl = process.env.WAHA_WEBHOOK_URL;
 
 export interface SessionInfo {
-  contactId: number;
-  sessionId: string;
-  client: WahaClient;
-  isHealthy: boolean;
+	contactId: number;
+	sessionId: string;
+	client: WahaClient;
+	isHealthy: boolean;
 }
 
 /**
@@ -17,218 +16,167 @@ export interface SessionInfo {
  * Periodically checks the status of all WAHA sessions
  */
 export class SessionManager {
-  private readonly baseUrl: string;
-  private readonly sessions: Map<string, SessionInfo> = new Map();
-  private healthCheckInterval: ReturnType<typeof setInterval> | null = null;
-  private readonly checkIntervalMs: number;
+	private readonly baseUrl: string;
+	private readonly sessions: Map<string, SessionInfo> = new Map();
+	private healthCheckInterval: ReturnType<typeof setInterval> | null = null;
+	private readonly checkIntervalMs: number;
 
-  constructor(baseUrl: string, checkIntervalMs: number = 60000) {
-    this.baseUrl = baseUrl;
-    this.checkIntervalMs = checkIntervalMs;
-  }
+	constructor(baseUrl: string, checkIntervalMs: number = 60000) {
+		this.baseUrl = baseUrl;
+		this.checkIntervalMs = checkIntervalMs;
+	}
 
-  /**
-   * Configure WAHA webhook URL for a session
-   */
-  async configureWebhook(sessionId: string): Promise<boolean> {
-    if (!webhookUrl) {
-      console.warn("[SessionManager] WAHA_WEBHOOK_URL not set, skipping webhook configuration");
-      return false;
-    }
+	/**
+	 * Initialize session manager by loading all contacts from the database
+	 */
+	async initialize(): Promise<void> {
+		try {
+			const contacts = db.select().from(schema.contacts).all();
 
-    try {
-      const headers: Record<string, string> = {
-        "Content-Type": "application/json",
-      };
-      if (wahaApiKey) {
-        headers["X-API-Key"] = wahaApiKey;
-      }
+			for (const contact of contacts) {
+				const client = new WahaClient(this.baseUrl, contact.wahaSessionId);
+				this.sessions.set(contact.wahaSessionId, {
+					contactId: contact.id,
+					sessionId: contact.wahaSessionId,
+					client,
+					isHealthy: false,
+				});
+			}
 
-      // Use PUT /api/sessions/{session} to update session config with webhooks
-      const response = await fetch(`${this.baseUrl}/api/sessions/${sessionId}`, {
-        method: "PUT",
-        headers,
-        body: JSON.stringify({
-          name: sessionId,
-          config: {
-            webhooks: [
-              {
-                url: webhookUrl,
-                events: ["message", "session.status"],
-              },
-            ],
-          },
-        }),
-      });
+			console.log(
+				`[SessionManager] Initialized with ${this.sessions.size} sessions`,
+			);
 
-      if (response.ok) {
-        console.log(`[SessionManager] Configured webhook for session ${sessionId}: ${webhookUrl}`);
-        
-        // Restart session for webhook to take effect
-        try {
-          await fetch(`${this.baseUrl}/api/sessions/${sessionId}/restart`, {
-            method: "POST",
-            headers,
-          });
-          console.log(`[SessionManager] Restarted session ${sessionId} to apply webhook`);
-        } catch (restartError) {
-          console.warn(`[SessionManager] Failed to restart session ${sessionId}:`, restartError);
-        }
-        
-        return true;
-      } else {
-        const errorText = await response.text();
-        console.error(`[SessionManager] Failed to configure webhook for ${sessionId}: ${response.status} - ${errorText}`);
-        return false;
-      }
-    } catch (error) {
-      console.error(`[SessionManager] Error configuring webhook for ${sessionId}:`, error);
-      return false;
-    }
-  }
+			// Initial health check
+			await this.checkAllSessions();
+		} catch (error) {
+			console.error("[SessionManager] Failed to initialize:", error);
+		}
+	}
 
-  /**
-   * Initialize session manager by loading all contacts from the database
-   */
-  async initialize(): Promise<void> {
-    try {
-      const contacts = db.select().from(schema.contacts).all();
-      
-      for (const contact of contacts) {
-        const client = new WahaClient(this.baseUrl, contact.wahaSessionId);
-        this.sessions.set(contact.wahaSessionId, {
-          contactId: contact.id,
-          sessionId: contact.wahaSessionId,
-          client,
-          isHealthy: false,
-        });
+	/**
+	 * Start the health check loop
+	 */
+	start(): void {
+		if (this.healthCheckInterval) {
+			console.log("[SessionManager] Already running");
+			return;
+		}
 
-        // Configure WAHA webhook for this session
-        await this.configureWebhook(contact.wahaSessionId);
-      }
+		console.log(
+			`[SessionManager] Starting health check loop (every ${this.checkIntervalMs}ms)`,
+		);
 
-      console.log(`[SessionManager] Initialized with ${this.sessions.size} sessions`);
-      
-      // Initial health check
-      await this.checkAllSessions();
-    } catch (error) {
-      console.error("[SessionManager] Failed to initialize:", error);
-    }
-  }
+		this.healthCheckInterval = setInterval(async () => {
+			await this.checkAllSessions();
+		}, this.checkIntervalMs);
 
-  /**
-   * Start the health check loop
-   */
-  start(): void {
-    if (this.healthCheckInterval) {
-      console.log("[SessionManager] Already running");
-      return;
-    }
+		// Run immediately
+		this.checkAllSessions();
+	}
 
-    console.log(`[SessionManager] Starting health check loop (every ${this.checkIntervalMs}ms)`);
-    
-    this.healthCheckInterval = setInterval(async () => {
-      await this.checkAllSessions();
-    }, this.checkIntervalMs);
+	/**
+	 * Stop the health check loop
+	 */
+	stop(): void {
+		if (this.healthCheckInterval) {
+			clearInterval(this.healthCheckInterval);
+			this.healthCheckInterval = null;
+			console.log("[SessionManager] Health check loop stopped");
+		}
+	}
 
-    // Run immediately
-    this.checkAllSessions();
-  }
+	/**
+	 * Get the client for a specific session
+	 */
+	getClient(sessionId: string): WahaClient | undefined {
+		return this.sessions.get(sessionId)?.client;
+	}
 
-  /**
-   * Stop the health check loop
-   */
-  stop(): void {
-    if (this.healthCheckInterval) {
-      clearInterval(this.healthCheckInterval);
-      this.healthCheckInterval = null;
-      console.log("[SessionManager] Health check loop stopped");
-    }
-  }
+	/**
+	 * Get the contact ID for a session
+	 */
+	getContactId(sessionId: string): number | undefined {
+		return this.sessions.get(sessionId)?.contactId;
+	}
 
-  /**
-   * Get the client for a specific session
-   */
-  getClient(sessionId: string): WahaClient | undefined {
-    return this.sessions.get(sessionId)?.client;
-  }
+	/**
+	 * Get session info for a session
+	 */
+	getSessionInfo(sessionId: string): SessionInfo | undefined {
+		return this.sessions.get(sessionId);
+	}
 
-  /**
-   * Get the contact ID for a session
-   */
-  getContactId(sessionId: string): number | undefined {
-    return this.sessions.get(sessionId)?.contactId;
-  }
+	/**
+	 * Get all sessions
+	 */
+	getAllSessions(): SessionInfo[] {
+		return Array.from(this.sessions.values());
+	}
 
-  /**
-   * Get session info for a session
-   */
-  getSessionInfo(sessionId: string): SessionInfo | undefined {
-    return this.sessions.get(sessionId);
-  }
+	/**
+	 * Check health of all sessions
+	 */
+	private async checkAllSessions(): Promise<void> {
+		const checks = Array.from(this.sessions.entries()).map(
+			async ([sessionId, info]) => {
+				try {
+					const isHealthy = await info.client.checkHealth();
+					const wasHealthy = info.isHealthy;
+					info.isHealthy = isHealthy;
 
-  /**
-   * Get all sessions
-   */
-  getAllSessions(): SessionInfo[] {
-    return Array.from(this.sessions.values());
-  }
+					if (!isHealthy && wasHealthy) {
+						console.log(
+							`[SessionManager] Session ${sessionId} is now DISCONNECTED`,
+						);
+					} else if (isHealthy && !wasHealthy) {
+						console.log(
+							`[SessionManager] Session ${sessionId} is now CONNECTED`,
+						);
+					}
+				} catch (error) {
+					console.error(
+						`[SessionManager] Health check error for ${sessionId}:`,
+						error,
+					);
+					info.isHealthy = false;
+				}
+			},
+		);
 
-  /**
-   * Check health of all sessions
-   */
-  private async checkAllSessions(): Promise<void> {
-    const checks = Array.from(this.sessions.entries()).map(async ([sessionId, info]) => {
-      try {
-        const isHealthy = await info.client.checkHealth();
-        const wasHealthy = info.isHealthy;
-        info.isHealthy = isHealthy;
+		await Promise.all(checks);
+	}
 
-        if (!isHealthy && wasHealthy) {
-          console.log(`[SessionManager] Session ${sessionId} is now DISCONNECTED`);
-        } else if (isHealthy && !wasHealthy) {
-          console.log(`[SessionManager] Session ${sessionId} is now CONNECTED`);
-        }
-      } catch (error) {
-        console.error(`[SessionManager] Health check error for ${sessionId}:`, error);
-        info.isHealthy = false;
-      }
-    });
+	/**
+	 * Add a new session dynamically
+	 */
+	addSession(contactId: number, sessionId: string): void {
+		if (this.sessions.has(sessionId)) {
+			console.log(`[SessionManager] Session ${sessionId} already exists`);
+			return;
+		}
 
-    await Promise.all(checks);
-  }
+		const client = new WahaClient(this.baseUrl, sessionId);
+		this.sessions.set(sessionId, {
+			contactId,
+			sessionId,
+			client,
+			isHealthy: false,
+		});
 
-  /**
-   * Add a new session dynamically
-   */
-  addSession(contactId: number, sessionId: string): void {
-    if (this.sessions.has(sessionId)) {
-      console.log(`[SessionManager] Session ${sessionId} already exists`);
-      return;
-    }
+		console.log(
+			`[SessionManager] Added new session ${sessionId} for contact ${contactId}`,
+		);
+	}
 
-    const client = new WahaClient(this.baseUrl, sessionId);
-    this.sessions.set(sessionId, {
-      contactId,
-      sessionId,
-      client,
-      isHealthy: false,
-    });
-
-    // Configure webhook for new session
-    this.configureWebhook(sessionId);
-
-    console.log(`[SessionManager] Added new session ${sessionId} for contact ${contactId}`);
-  }
-
-  /**
-   * Remove a session
-   */
-  removeSession(sessionId: string): void {
-    if (this.sessions.delete(sessionId)) {
-      console.log(`[SessionManager] Removed session ${sessionId}`);
-    }
-  }
+	/**
+	 * Remove a session
+	 */
+	removeSession(sessionId: string): void {
+		if (this.sessions.delete(sessionId)) {
+			console.log(`[SessionManager] Removed session ${sessionId}`);
+		}
+	}
 }
 
 // Singleton instance
@@ -238,19 +186,24 @@ let sessionManagerInstance: SessionManager | null = null;
  * Get or create the singleton SessionManager instance
  */
 export function getSessionManager(baseUrl?: string): SessionManager {
-  if (!sessionManagerInstance && baseUrl) {
-    sessionManagerInstance = new SessionManager(baseUrl);
-  }
-  if (!sessionManagerInstance) {
-    throw new Error("SessionManager not initialized. Provide baseUrl on first call.");
-  }
-  return sessionManagerInstance;
+	if (!sessionManagerInstance && baseUrl) {
+		sessionManagerInstance = new SessionManager(baseUrl);
+	}
+	if (!sessionManagerInstance) {
+		throw new Error(
+			"SessionManager not initialized. Provide baseUrl on first call.",
+		);
+	}
+	return sessionManagerInstance;
 }
 
 /**
  * Initialize the SessionManager with a base URL
  */
-export function initSessionManager(baseUrl: string, checkIntervalMs?: number): SessionManager {
-  sessionManagerInstance = new SessionManager(baseUrl, checkIntervalMs);
-  return sessionManagerInstance;
+export function initSessionManager(
+	baseUrl: string,
+	checkIntervalMs?: number,
+): SessionManager {
+	sessionManagerInstance = new SessionManager(baseUrl, checkIntervalMs);
+	return sessionManagerInstance;
 }

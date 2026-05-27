@@ -44,6 +44,8 @@ async function getContactBySession(sessionId: string) {
 export async function handleWebhookEvent(event: WahaWebhookEvent): Promise<void> {
   const { event: eventType, session: sessionId, payload } = event;
 
+  console.log(event)
+
   // Only process message events for now
   if (eventType !== "message") {
     return;
@@ -155,6 +157,7 @@ webhookRouter.post("/", async (c) => {
 
 // Handle any POST request to /webhook (including /webhook., /webhook/, etc.)
 webhookRouter.all("*", async (c) => {
+  console.log("hit")
   // Only handle POST requests
   if (c.req.method !== "POST") {
     return c.json({ status: "method not allowed" }, 405);
@@ -177,27 +180,8 @@ webhookRouter.all("*", async (c) => {
   }
 });
 
-// Explicit route for /webhook. (trailing dot - WAHA bug) - using inline handler
 webhookRouter.post("/", async (c) => {
-  // Check if the actual path ends with a dot
-  const path = c.req.path;
-  if (path.endsWith(".")) {
-    // Handle trailing dot case
-    try {
-      const body = await c.req.json<WahaWebhookEvent>();
-      if (!body.event || !body.session) {
-        return c.json({ status: "invalid payload" }, 400);
-      }
-      handleWebhookEvent(body).catch((error) => {
-        console.error("[Webhook] Async error:", error);
-      });
-      return c.json({ status: "ok" });
-    } catch (error) {
-      return c.json({ status: "error parsing body" }, 400);
-    }
-  }
-  
-  // Normal case - let the main handler deal with it
+  console.log("hit2")
   try {
     const body = await c.req.json<WahaWebhookEvent>();
     if (!body.event || !body.session) {
