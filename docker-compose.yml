@@ -32,7 +32,7 @@ services:
 
   # Akka Platform — WhatsApp automation server
   akka:
-    image: ghcr.io/snailsquid/akka:latest
+    image: akka:latest
     container_name: akka
     restart: unless-stopped
     ports:

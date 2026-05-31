@@ -1,6 +1,0 @@
-{
-  "signature": "scripts/migrate.ts::ℹ️ Advisory — no action required this turn:\nCode-quality warnings introduced/touched this turn: 8 across 1 file(s).\nTop rules: typescript:6387×8\nDetails written to .pi-lens/cache/code-quality-warnings.json\nNo action required unless you are already refactoring these areas.",
-  "sessionId": "lens-mpu6h8o7-f0c4ed30",
-  "projectSeqStart": 57,
-  "projectSeqEnd": 58
-}
