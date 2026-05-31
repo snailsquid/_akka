@@ -203,10 +203,10 @@
     },
     {
       "fileA": "src/router/index.ts",
-      "startA": 131,
+      "startA": 186,
       "fileB": "src/router/index.ts",
-      "startB": 114,
-      "lines": 11,
+      "startB": 157,
+      "lines": 15,
       "tokens": 0
     },
     {
@@ -275,9 +275,9 @@
     },
     {
       "fileA": "src/commands/marketplace.ts",
-      "startA": 208,
+      "startA": 275,
       "fileB": "src/commands/marketplace.ts",
-      "startB": 28,
+      "startB": 40,
       "lines": 7,
       "tokens": 0
     },
@@ -362,7 +362,7 @@
       "tokens": 0
     }
   ],
-  "duplicatedLines": 1404,
-  "totalLines": 8423,
-  "percentage": 16.67
+  "duplicatedLines": 1408,
+  "totalLines": 8700,
+  "percentage": 16.18
 }

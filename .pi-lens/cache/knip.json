@@ -48,16 +48,6 @@
     },
     {
       "type": "file",
-      "name": "admin-ui/src/lib/api.ts",
-      "file": "admin-ui/src/lib/api.ts"
-    },
-    {
-      "type": "file",
-      "name": "admin-ui/src/lib/auth.ts",
-      "file": "admin-ui/src/lib/auth.ts"
-    },
-    {
-      "type": "file",
       "name": "admin-ui/src/components/AddSessionForm.tsx",
       "file": "admin-ui/src/components/AddSessionForm.tsx"
     },
@@ -80,6 +70,16 @@
       "type": "file",
       "name": "admin-ui/src/pages/Login.tsx",
       "file": "admin-ui/src/pages/Login.tsx"
+    },
+    {
+      "type": "file",
+      "name": "admin-ui/src/lib/api.ts",
+      "file": "admin-ui/src/lib/api.ts"
+    },
+    {
+      "type": "file",
+      "name": "admin-ui/src/lib/auth.ts",
+      "file": "admin-ui/src/lib/auth.ts"
     },
     {
       "type": "file",
@@ -243,12 +243,6 @@
     },
     {
       "type": "export",
-      "name": "demoCommands",
-      "file": "src/commands/demo.ts",
-      "line": 63
-    },
-    {
-      "type": "export",
       "name": "createMockFetch",
       "file": "test/utils/mocks.ts",
       "line": 47
@@ -263,7 +257,7 @@
       "type": "export",
       "name": "MarketplaceHandler",
       "file": "src/commands/marketplace.ts",
-      "line": 24
+      "line": 32
     },
     {
       "type": "export",
@@ -293,12 +287,6 @@
   "unusedExports": [
     {
       "type": "export",
-      "name": "demoCommands",
-      "file": "src/commands/demo.ts",
-      "line": 63
-    },
-    {
-      "type": "export",
       "name": "createMockFetch",
       "file": "test/utils/mocks.ts",
       "line": 47
@@ -313,7 +301,7 @@
       "type": "export",
       "name": "MarketplaceHandler",
       "file": "src/commands/marketplace.ts",
-      "line": 24
+      "line": 32
     },
     {
       "type": "export",
@@ -388,16 +376,6 @@
     },
     {
       "type": "file",
-      "name": "admin-ui/src/lib/api.ts",
-      "file": "admin-ui/src/lib/api.ts"
-    },
-    {
-      "type": "file",
-      "name": "admin-ui/src/lib/auth.ts",
-      "file": "admin-ui/src/lib/auth.ts"
-    },
-    {
-      "type": "file",
       "name": "admin-ui/src/components/AddSessionForm.tsx",
       "file": "admin-ui/src/components/AddSessionForm.tsx"
     },
@@ -420,6 +398,16 @@
       "type": "file",
       "name": "admin-ui/src/pages/Login.tsx",
       "file": "admin-ui/src/pages/Login.tsx"
+    },
+    {
+      "type": "file",
+      "name": "admin-ui/src/lib/api.ts",
+      "file": "admin-ui/src/lib/api.ts"
+    },
+    {
+      "type": "file",
+      "name": "admin-ui/src/lib/auth.ts",
+      "file": "admin-ui/src/lib/auth.ts"
     },
     {
       "type": "file",
@@ -584,5 +572,5 @@
   ],
   "unusedDeps": [],
   "unlistedDeps": [],
-  "summary": "Found 56 issues"
+  "summary": "Found 55 issues"
 }

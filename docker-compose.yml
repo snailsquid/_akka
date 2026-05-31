@@ -12,9 +12,8 @@ services:
       - WAHA_DASHBOARD_USERNAME=admin
       - WAHA_DASHBOARD_PASSWORD=
       - WAHA_DASHBOARD_NO_PASSWORD=true
-      - WAHA_WEBHOOK_URL=http://host.docker.internal:3000/webhook
-      - WAHA_SESSION_WEBHOOK_URL=http://host.docker.internal:3000/webhook
-      - WAHA_WEBHOOK_EVENTS=message
+      - WHATSAPP_HOOK_URL=http://172.17.0.1:3000/webhook
+      - WHATSAPP_HOOK_EVENTS=*
       - WAHA_SWAGGER_ENABLED=true
       # Static API key for Akka health checks
       - WAHA_API_KEY=waha-api-key-2024

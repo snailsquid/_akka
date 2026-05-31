@@ -1,4 +1,6 @@
 {
-  "signature": "src/gateway/session-manager.ts::Unresolved from this turn — src/gateway/session-manager.ts:\n🔴 STOP — 1 issue(s) must be fixed:\n  L2: 'eq' is declared but its value is never read.\n    💡 Fix: Remove the unused declaration or rename with '_' prefix if intentionally unused.",
-  "sessionId": "lens-mpm58od8-7973b803"
+  "signature": "src/router/index.ts::ℹ️ Advisory — no action required this turn:\nCode-quality warnings introduced/touched this turn: 1 across 1 file(s).\nTop rules: missing-error-propagation×1\nDetails written to .pi-lens/cache/code-quality-warnings.json\nNo action required unless you are already refactoring these areas.",
+  "sessionId": "lens-mpo3hlfe-cb315ea0",
+  "projectSeqStart": 30,
+  "projectSeqEnd": 31
 }
