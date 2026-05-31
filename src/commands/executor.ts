@@ -16,7 +16,7 @@ interface ExecutionResult {
  * Commands run in the host context. Add worker/isolate sandboxing later.
  */
 export class CommandExecutor {
-private defaultTimeoutMs: number;
+	private defaultTimeoutMs: number;
 
 	constructor(timeoutMs: number = 5000) {
 		this.defaultTimeoutMs = timeoutMs;
@@ -98,10 +98,11 @@ private defaultTimeoutMs: number;
 			);
 
 			// Stub require — type-only imports are stripped by esbuild,
-			// but runtime imports (e.g. @akka/sdk) get an empty stub.
-			// @akka/sdk is published at https://github.com/snailsquid/akka-sdk
-			// and is purely a dev-time type-checking tool — the command()
-			// helper is only for validation during development.
+			// but runtime imports (e.g. @akka-bot/sdk) get an empty stub.
+			// @akka-bot/sdk is published on npm and at
+			// https://github.com/snailsquid/akka-sdk
+			// It is purely a dev-time type-checking tool — the command()
+			// helper only validates during development.
 			const stubRequire = (id: string) => {
 				console.warn(`[Executor] Stub require('${id}') — no-op`);
 				return {};
@@ -125,10 +126,7 @@ private defaultTimeoutMs: number;
 			}
 
 			// Call the handler
-			await Promise.race([
-				handler(ctx),
-				this.timeoutPromise(effectiveTimeout),
-			]);
+			await Promise.race([handler(ctx), this.timeoutPromise(effectiveTimeout)]);
 
 			return { success: true };
 		} catch (error: unknown) {
@@ -154,8 +152,7 @@ private defaultTimeoutMs: number;
 		if (!exports || typeof exports !== "object") return null;
 
 		// 1. Hash map: demoCommands or commands
-		const cmdMap =
-			(exports as any).demoCommands || (exports as any).commands;
+		const cmdMap = (exports as any).demoCommands || (exports as any).commands;
 		if (cmdMap && typeof cmdMap === "object") {
 			const entry = cmdMap[slug];
 			if (entry && typeof (entry as any).handle === "function") {
