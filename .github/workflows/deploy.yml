@@ -28,7 +28,8 @@ jobs:
           chmod 600 ~/.ssh/config
 
       - name: Verify SSH
-        run: ssh hetzner "docker info --format 'Server: {{.ServerVersion}}' && docker compose version"
+        run: |
+          ssh hetzner "docker info --format 'Server: {{.ServerVersion}}' && docker compose version"
 
       - name: Deploy
         run: |
