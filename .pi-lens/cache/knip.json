@@ -23,6 +23,11 @@
     },
     {
       "type": "file",
+      "name": "scripts/migrate.ts",
+      "file": "scripts/migrate.ts"
+    },
+    {
+      "type": "file",
       "name": "admin-ui/src/App.tsx",
       "file": "admin-ui/src/App.tsx"
     },
@@ -63,16 +68,6 @@
     },
     {
       "type": "file",
-      "name": "admin-ui/src/pages/Dashboard.tsx",
-      "file": "admin-ui/src/pages/Dashboard.tsx"
-    },
-    {
-      "type": "file",
-      "name": "admin-ui/src/pages/Login.tsx",
-      "file": "admin-ui/src/pages/Login.tsx"
-    },
-    {
-      "type": "file",
       "name": "admin-ui/src/lib/api.ts",
       "file": "admin-ui/src/lib/api.ts"
     },
@@ -80,6 +75,16 @@
       "type": "file",
       "name": "admin-ui/src/lib/auth.ts",
       "file": "admin-ui/src/lib/auth.ts"
+    },
+    {
+      "type": "file",
+      "name": "admin-ui/src/pages/Dashboard.tsx",
+      "file": "admin-ui/src/pages/Dashboard.tsx"
+    },
+    {
+      "type": "file",
+      "name": "admin-ui/src/pages/Login.tsx",
+      "file": "admin-ui/src/pages/Login.tsx"
     },
     {
       "type": "file",
@@ -242,6 +247,12 @@
       "file": "src/developer/static/assets/index-yr1xVjAk.js"
     },
     {
+      "type": "dependency",
+      "name": "vm2",
+      "file": "package.json",
+      "line": 23
+    },
+    {
       "type": "export",
       "name": "createMockFetch",
       "file": "test/utils/mocks.ts",
@@ -275,13 +286,19 @@
       "type": "export",
       "name": "CommandExecutor",
       "file": "src/commands/executor.ts",
-      "line": 14
+      "line": 18
     },
     {
       "type": "export",
       "name": "CommandWithDeveloper",
       "file": "src/types.ts",
       "line": 44
+    },
+    {
+      "type": "export",
+      "name": "CommandDefinition",
+      "file": "src/types.ts",
+      "line": 96
     }
   ],
   "unusedExports": [
@@ -319,13 +336,19 @@
       "type": "export",
       "name": "CommandExecutor",
       "file": "src/commands/executor.ts",
-      "line": 14
+      "line": 18
     },
     {
       "type": "export",
       "name": "CommandWithDeveloper",
       "file": "src/types.ts",
       "line": 44
+    },
+    {
+      "type": "export",
+      "name": "CommandDefinition",
+      "file": "src/types.ts",
+      "line": 96
     }
   ],
   "unusedFiles": [
@@ -348,6 +371,11 @@
       "type": "file",
       "name": "developer-ui/vite.config.ts",
       "file": "developer-ui/vite.config.ts"
+    },
+    {
+      "type": "file",
+      "name": "scripts/migrate.ts",
+      "file": "scripts/migrate.ts"
     },
     {
       "type": "file",
@@ -391,16 +419,6 @@
     },
     {
       "type": "file",
-      "name": "admin-ui/src/pages/Dashboard.tsx",
-      "file": "admin-ui/src/pages/Dashboard.tsx"
-    },
-    {
-      "type": "file",
-      "name": "admin-ui/src/pages/Login.tsx",
-      "file": "admin-ui/src/pages/Login.tsx"
-    },
-    {
-      "type": "file",
       "name": "admin-ui/src/lib/api.ts",
       "file": "admin-ui/src/lib/api.ts"
     },
@@ -408,6 +426,16 @@
       "type": "file",
       "name": "admin-ui/src/lib/auth.ts",
       "file": "admin-ui/src/lib/auth.ts"
+    },
+    {
+      "type": "file",
+      "name": "admin-ui/src/pages/Dashboard.tsx",
+      "file": "admin-ui/src/pages/Dashboard.tsx"
+    },
+    {
+      "type": "file",
+      "name": "admin-ui/src/pages/Login.tsx",
+      "file": "admin-ui/src/pages/Login.tsx"
     },
     {
       "type": "file",
@@ -570,7 +598,14 @@
       "file": "src/developer/static/assets/index-yr1xVjAk.js"
     }
   ],
-  "unusedDeps": [],
+  "unusedDeps": [
+    {
+      "type": "dependency",
+      "name": "vm2",
+      "file": "package.json",
+      "line": 23
+    }
+  ],
   "unlistedDeps": [],
-  "summary": "Found 55 issues"
+  "summary": "Found 58 issues"
 }
