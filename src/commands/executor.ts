@@ -16,8 +16,7 @@ interface ExecutionResult {
  * Commands run in the host context. Add worker/isolate sandboxing later.
  */
 export class CommandExecutor {
-	private defaultTimeoutMs: number;
-	private esbuildInitialized = false;
+private defaultTimeoutMs: number;
 
 	constructor(timeoutMs: number = 5000) {
 		this.defaultTimeoutMs = timeoutMs;
@@ -83,7 +82,9 @@ export class CommandExecutor {
 				platform: "neutral",
 			});
 
-			const js = result.outputFiles[0].text;
+			const file = result.outputFiles?.[0];
+			if (!file) throw new Error("esbuild produced no output");
+			const js = file.text;
 
 			// Evaluate the CJS module
 			const mod = { exports: {} };
@@ -97,7 +98,10 @@ export class CommandExecutor {
 			);
 
 			// Stub require — type-only imports are stripped by esbuild,
-			// but runtime imports (e.g. @akka/sdk) get an empty stub
+			// but runtime imports (e.g. @akka/sdk) get an empty stub.
+			// @akka/sdk is published at https://github.com/snailsquid/akka-sdk
+			// and is purely a dev-time type-checking tool — the command()
+			// helper is only for validation during development.
 			const stubRequire = (id: string) => {
 				console.warn(`[Executor] Stub require('${id}') — no-op`);
 				return {};

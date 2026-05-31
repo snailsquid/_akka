@@ -121,7 +121,9 @@ Access the Developer Dashboard at `/developer` on your running Akka instance:
 
 ### SDK Reference — `@akka/sdk`
 
-The SDK lives at [`src/commands/sdk/`](src/commands/sdk/). It's a lightweight TypeScript package for building Akka commands.
+The SDK is published to npm as [`@akka/sdk`](https://www.npmjs.com/package/@akka/sdk).
+Source at [github.com/snailsquid/akka-sdk](https://github.com/snailsquid/akka-sdk).
+It's a lightweight TypeScript package for building Akka commands.
 
 #### Installation
 
