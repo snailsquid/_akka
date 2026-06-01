@@ -3,7 +3,8 @@ import { eq, and, gt } from "drizzle-orm";
 import type { WebhookPayload, ConversationFlow } from "../types";
 import { userService } from "./user-service";
 import { WahaClient } from "../gateway/waha-client";
-import { getSessionManager } from "../gateway/session-manager";
+import { clientCache } from "../gateway/client-cache";
+import { rateLimitedLog } from "../gateway/rate-limited-logger";
 import { handleSystemCommand } from "../commands/system";
 import { marketplaceHandler } from "../commands/marketplace";
 import { commandExecutor } from "../commands/executor";
@@ -41,28 +42,28 @@ export class Router {
 	}
 
 	/**
-	 * Get or create a WahaClient for a contact
+	 * Get the cached WahaClient for a contact. Returns null and logs a
+	 * cache-miss line if the contact's sessionId is not registered.
+	 *
+	 * The lookup is now cache-only: the previous fallback that constructed a
+	 * new WahaClient on miss has been removed because it bypassed the per-
+	 * session 500ms send queue (each new client had its own sendQueue).
 	 */
 	private getClientForContact(contactId: number): WahaClient | null {
-		const sessionManager = getSessionManager();
-		const sessionInfo = sessionManager
-			.getAllSessions()
-			.find((s) => s.contactId === contactId);
-
-		if (sessionInfo) {
-			return sessionInfo.client;
-		}
-
-		// Fallback: create client with session ID from contact
 		const contact = db
 			.select()
 			.from(schema.contacts)
 			.where(eq(schema.contacts.id, contactId))
 			.get();
-		if (contact) {
-			return new WahaClient(this.wahaBaseUrl, contact.wahaSessionId);
-		}
+		if (!contact) return null;
 
+		const cached = clientCache.getClient(contact.wahaSessionId);
+		if (cached) return cached;
+
+		rateLimitedLog(
+			`cache-miss:${contact.wahaSessionId}`,
+			`[Router] client-cache miss sessionId=${contact.wahaSessionId} contactId=${contactId} contactName=${contact.name}`,
+		);
 		return null;
 	}
 
@@ -270,9 +271,6 @@ export class Router {
 		console.log(
 			`[Router] Command: ${command.slug} args: ${command.args.join(", ")}`,
 		);
-
-		// React with eye emoji to avoid quick-reaction bans
-		await client.sendReaction(messageId, senderJid, "\u{1F441}");
 
 		try {
 			const isSystem = SYSTEM_COMMANDS.has(command.slug.toLowerCase());

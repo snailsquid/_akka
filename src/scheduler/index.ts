@@ -1,16 +1,13 @@
 import { db, schema } from "../db";
-import { eq, and, lte } from "drizzle-orm";
+import { eq, and, lte, lt } from "drizzle-orm";
 import type { ScheduledTask } from "../types";
 import { parseDuration } from "./parser";
 
 type TaskCallback = (task: ScheduledTask) => Promise<void>;
 
-/**
- * 11.1-11.6 Scheduler for delayed command execution
- * SQLite-backed, polls every 30s, survives restarts
- */
 export class Scheduler {
   private pollInterval: ReturnType<typeof setInterval> | null = null;
+  private cleanupInterval: ReturnType<typeof setInterval> | null = null;
   private onExecute: TaskCallback;
   private pollMs: number;
   private running: boolean = false;
@@ -18,6 +15,46 @@ export class Scheduler {
   constructor(onExecute: TaskCallback, pollMs: number = 30000) {
     this.onExecute = onExecute;
     this.pollMs = pollMs;
+  }
+
+  cleanupExpiredFlows(): number {
+    const now = new Date().toISOString();
+    const result = db
+      .delete(schema.conversationFlows)
+      .where(lt(schema.conversationFlows.expiresAt, now))
+      .run();
+    if (result.changes > 0) {
+      console.log(`[Scheduler] Cleaned up ${result.changes} expired conversation flows`);
+    }
+    return result.changes;
+  }
+
+  cleanupExpiredTokens(): number {
+    const now = new Date().toISOString();
+    const result = db
+      .delete(schema.registrationTokens)
+      .where(
+        and(
+          lt(schema.registrationTokens.expiresAt, now),
+          eq(schema.registrationTokens.used, false)
+        )
+      )
+      .run();
+    if (result.changes > 0) {
+      console.log(`[Scheduler] Cleaned up ${result.changes} expired registration tokens`);
+    }
+    return result.changes;
+  }
+
+  startCleanup(intervalMs?: number): void {
+    const cleanupMs = intervalMs || parseInt(process.env.CLEANUP_INTERVAL_MS || "3600000", 10);
+    console.log(`[Scheduler] Starting cleanup job (every ${cleanupMs}ms)`);
+    this.cleanupExpiredFlows();
+    this.cleanupExpiredTokens();
+    this.cleanupInterval = setInterval(() => {
+      this.cleanupExpiredFlows();
+      this.cleanupExpiredTokens();
+    }, cleanupMs);
   }
 
   /**

@@ -5,18 +5,22 @@ import { initSessionManager, getSessionManager } from "../gateway/session-manage
 
 export const adminRoutes = new Hono();
 
-// Simple admin auth middleware
+const ADMIN_TOKEN = process.env.ADMIN_TOKEN || "admin-token";
+
+if (process.env.NODE_ENV === "production" && !process.env.ADMIN_TOKEN) {
+  console.warn("[Admin] WARNING: Using default ADMIN_TOKEN in production. Set ADMIN_TOKEN environment variable.");
+}
+
 function adminAuth(c: any, next: any) {
   const auth = c.req.header("Authorization") || "";
-  if (auth !== "Bearer admin-token") return c.json({ error: "Unauthorized" }, 401);
+  if (auth !== `Bearer ${ADMIN_TOKEN}`) return c.json({ error: "Unauthorized" }, 401);
   return next();
 }
 
-// 13.1 Admin login
 adminRoutes.post("/login", async (c) => {
   const { username, password } = await c.req.json<{ username?: string; password?: string }>();
   if (username === "admin" && password === "admin") {
-    return c.json({ token: "admin-token" });
+    return c.json({ token: ADMIN_TOKEN });
   }
   return c.json({ error: "Invalid credentials" }, 401);
 });

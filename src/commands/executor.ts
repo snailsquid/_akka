@@ -69,7 +69,6 @@ export class CommandExecutor {
 		const effectiveTimeout = timeoutMs || this.defaultTimeoutMs;
 
 		try {
-			// Transpile TypeScript → CJS JavaScript
 			const result = await build({
 				stdin: {
 					contents: source,
@@ -86,7 +85,6 @@ export class CommandExecutor {
 			if (!file) throw new Error("esbuild produced no output");
 			const js = file.text;
 
-			// Evaluate the CJS module
 			const mod = { exports: {} };
 			const fn = new Function(
 				"require",
@@ -97,26 +95,17 @@ export class CommandExecutor {
 				js,
 			);
 
-			// Stub require — type-only imports are stripped by esbuild,
-			// but runtime imports (e.g. @akka-bot/sdk) get an empty stub.
-			// @akka-bot/sdk is published on npm and at
-			// https://github.com/snailsquid/akka-sdk
-			// It is purely a dev-time type-checking tool — the command()
-			// helper only validates during development.
 			const stubRequire = (id: string) => {
 				console.warn(`[Executor] Stub require('${id}') — no-op`);
 				return {};
 			};
 
-			// Run with timeout guard
-			await Promise.race([
-				(async () => {
-					fn(stubRequire, mod, mod.exports, console, ctx);
-				})(),
-				this.timeoutPromise(effectiveTimeout),
-			]);
+			const evalPromise = (async () => {
+				fn(stubRequire, mod, mod.exports, console, ctx);
+			})();
 
-			// Find the command definition matching the slug
+			const evalResult = await this.withTimeout(evalPromise, effectiveTimeout);
+
 			const handler = this.resolveHandler(mod.exports, slug);
 			if (!handler) {
 				return {
@@ -125,8 +114,7 @@ export class CommandExecutor {
 				};
 			}
 
-			// Call the handler
-			await Promise.race([handler(ctx), this.timeoutPromise(effectiveTimeout)]);
+			await this.withTimeout(handler(ctx), effectiveTimeout);
 
 			return { success: true };
 		} catch (error: unknown) {
@@ -200,16 +188,22 @@ export class CommandExecutor {
 		return null;
 	}
 
-	/**
-	 * 7.3 Timeout promise
-	 */
-	private timeoutPromise(ms: number): Promise<never> {
-		return new Promise((_, reject) =>
-			setTimeout(
+	private withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
+		return new Promise((resolve, reject) => {
+			const timer = setTimeout(
 				() => reject(new Error(`Command execution timed out after ${ms}ms`)),
 				ms,
-			),
-		);
+			);
+			promise
+				.then((result) => {
+					clearTimeout(timer);
+					resolve(result);
+				})
+				.catch((error) => {
+					clearTimeout(timer);
+					reject(error);
+				});
+		});
 	}
 }
 

@@ -139,8 +139,56 @@ describe("Scheduler", () => {
 
     it("should not start twice", () => {
       scheduler.start();
-      scheduler.start(); // Should not throw
+      scheduler.start();
       expect(scheduler.isRunning()).toBe(true);
+    });
+  });
+
+  describe("cleanup", () => {
+    it("should cleanup expired conversation flows", () => {
+      const pastTime = new Date(Date.now() - 1000).toISOString();
+      const futureTime = new Date(Date.now() + 60000).toISOString();
+      
+      sqlite.exec(
+        "INSERT INTO conversation_flows (user_id, contact_id, flow_type, state, data, expires_at) VALUES (?, ?, ?, ?, ?, ?)",
+        [1, 1, "marketplace", "{}", "{}", pastTime]
+      );
+      sqlite.exec(
+        "INSERT INTO conversation_flows (user_id, contact_id, flow_type, state, data, expires_at) VALUES (?, ?, ?, ?, ?, ?)",
+        [1, 1, "other", "{}", "{}", futureTime]
+      );
+
+      const deleted = scheduler.cleanupExpiredFlows();
+      
+      expect(deleted).toBe(1);
+      
+      const remaining = sqlite.query("SELECT COUNT(*) as count FROM conversation_flows").get() as { count: number };
+      expect(remaining.count).toBe(1);
+    });
+
+    it("should cleanup expired unused registration tokens", () => {
+      const pastTime = new Date(Date.now() - 1000).toISOString();
+      const futureTime = new Date(Date.now() + 60000).toISOString();
+      
+      sqlite.exec(
+        "INSERT INTO registration_tokens (token, developer_id, used, expires_at) VALUES (?, ?, ?, ?)",
+        ["expired-token", null, 0, pastTime]
+      );
+      sqlite.exec(
+        "INSERT INTO registration_tokens (token, developer_id, used, expires_at) VALUES (?, ?, ?, ?)",
+        ["used-token", null, 1, pastTime]
+      );
+      sqlite.exec(
+        "INSERT INTO registration_tokens (token, developer_id, used, expires_at) VALUES (?, ?, ?, ?)",
+        ["active-token", null, 0, futureTime]
+      );
+
+      const deleted = scheduler.cleanupExpiredTokens();
+      
+      expect(deleted).toBe(1);
+      
+      const remaining = sqlite.query("SELECT token FROM registration_tokens").all() as { token: string }[];
+      expect(remaining.map(r => r.token).sort()).toEqual(["active-token", "used-token"]);
     });
   });
 });

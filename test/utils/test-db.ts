@@ -87,6 +87,7 @@ export function createTestDb() {
       token TEXT NOT NULL UNIQUE,
       developer_id INTEGER REFERENCES developers(id),
       used INTEGER NOT NULL DEFAULT 0,
+      expires_at TEXT,
       created_at TEXT NOT NULL DEFAULT (datetime('now'))
     );
     

@@ -1,0 +1,178 @@
+/* Neo-Brutalist Component Styles */
+
+/* Button */
+.neo-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1rem 2rem;
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border: var(--border-4);
+  background-color: var(--neo-accent);
+  color: var(--neo-fg);
+  cursor: pointer;
+  transition: all 100ms ease-out;
+  box-shadow: var(--shadow-md);
+  text-decoration: none;
+  white-space: nowrap;
+  min-height: 3.5rem;
+}
+
+.neo-button:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.neo-button:active {
+  transform: translate(2px, 2px);
+  box-shadow: none;
+}
+
+.neo-button-secondary {
+  background-color: var(--neo-secondary);
+}
+
+.neo-button-outline {
+  background-color: var(--neo-white);
+}
+
+.neo-button-large {
+  padding: 1.25rem 2.5rem;
+  font-size: 1rem;
+  min-height: 4rem;
+}
+
+/* Card */
+.neo-card {
+  background-color: var(--neo-white);
+  border: var(--border-4);
+  box-shadow: var(--shadow-md);
+  padding: var(--space-8);
+  transition: all 200ms ease-out;
+}
+
+.neo-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-xl);
+}
+
+.neo-card-header {
+  border-bottom: var(--border-4);
+  padding-bottom: var(--space-4);
+  margin-bottom: var(--space-6);
+}
+
+/* Badge */
+.neo-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1rem;
+  font-weight: 900;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  border: var(--border-4);
+  background-color: var(--neo-accent);
+  color: var(--neo-fg);
+  box-shadow: var(--shadow-sm);
+  border-radius: 9999px;
+  white-space: nowrap;
+}
+
+.neo-badge-secondary {
+  background-color: var(--neo-secondary);
+}
+
+.neo-badge-muted {
+  background-color: var(--neo-muted);
+}
+
+/* Input */
+.neo-input {
+  width: 100%;
+  padding: 1rem 1.5rem;
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 1.125rem;
+  border: var(--border-4);
+  background-color: var(--neo-white);
+  color: var(--neo-fg);
+  transition: all 100ms ease-out;
+  min-height: 3.5rem;
+}
+
+.neo-input::placeholder {
+  color: rgba(0, 0, 0, 0.4);
+}
+
+.neo-input:focus {
+  outline: none;
+  background-color: var(--neo-secondary);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Container */
+.neo-container {
+  width: 100%;
+  max-width: 1280px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--space-6);
+  padding-right: var(--space-6);
+}
+
+@media (min-width: 768px) {
+  .neo-container {
+    padding-left: var(--space-8);
+    padding-right: var(--space-8);
+  }
+}
+
+/* Section */
+.neo-section {
+  padding-top: var(--space-16);
+  padding-bottom: var(--space-16);
+}
+
+@media (min-width: 768px) {
+  .neo-section {
+    padding-top: var(--space-24);
+    padding-bottom: var(--space-24);
+  }
+}
+
+/* Background patterns */
+.neo-bg-dots {
+  background-image: radial-gradient(#000 1.5px, transparent 1.5px);
+  background-size: 20px 20px;
+}
+
+.neo-bg-grid {
+  background-size: 40px 40px;
+  background-image: 
+    linear-gradient(to right, rgba(0, 0, 0, 0.1) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.1) 1px, transparent 1px);
+}
+
+/* Icon wrapper */
+.neo-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-4);
+  border: var(--border-4);
+  background-color: var(--neo-accent);
+  box-shadow: var(--shadow-sm);
+}
+
+.neo-icon svg {
+  width: 2rem;
+  height: 2rem;
+  stroke-width: 3px;
+}

@@ -1,5 +1,7 @@
 import { db, schema } from "../db";
 import { WahaClient } from "./waha-client";
+import { clientCache } from "./client-cache";
+import { dedupStore } from "./dedup-store";
 
 const wahaApiKey = process.env.WAHA_API_KEY;
 const webhookUrl = process.env.WAHA_WEBHOOK_URL;
@@ -41,16 +43,20 @@ export class SessionManager {
 					client,
 					isHealthy: false,
 				});
+				clientCache.setClient(contact.wahaSessionId, client);
 			}
 
+			dedupStore.startSweep();
+
 			console.log(
-				`[SessionManager] Initialized with ${this.sessions.size} sessions`,
+				`[SessionManager] Initialized with ${this.sessions.size} sessions; dedup TTL ${dedupStore.getTtlMs()}ms`,
 			);
 
 			// Initial health check
 			await this.checkAllSessions();
 		} catch (error) {
 			console.error("[SessionManager] Failed to initialize:", error);
+			throw error;
 		}
 	}
 
@@ -163,6 +169,7 @@ export class SessionManager {
 			client,
 			isHealthy: false,
 		});
+		clientCache.setClient(sessionId, client);
 
 		console.log(
 			`[SessionManager] Added new session ${sessionId} for contact ${contactId}`,
@@ -173,6 +180,7 @@ export class SessionManager {
 	 * Remove a session
 	 */
 	removeSession(sessionId: string): void {
+		clientCache.removeClient(sessionId);
 		if (this.sessions.delete(sessionId)) {
 			console.log(`[SessionManager] Removed session ${sessionId}`);
 		}

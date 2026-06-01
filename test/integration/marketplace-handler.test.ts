@@ -468,7 +468,6 @@ describe("MarketplaceHandler", () => {
     });
 
     it("buildInitialState marks commands as installed or not", async () => {
-      // Register and install a command
       const cmd = await commandRegistry.registerCommand(
         testDeveloperId,
         "state-cmd",
@@ -482,7 +481,6 @@ describe("MarketplaceHandler", () => {
 
       userService.installCommand(testUserId, testContactId, cmd.id, "state-cmd");
 
-      // Register another command but don't install
       await commandRegistry.registerCommand(
         testDeveloperId,
         "not-installed",
@@ -501,6 +499,26 @@ describe("MarketplaceHandler", () => {
 
       expect(stateCmd?.installed).toBe(true);
       expect(notInstalledCmd?.installed).toBe(false);
+    });
+
+    it("shows renamed command as installed", async () => {
+      const cmd = await commandRegistry.registerCommand(
+        testDeveloperId,
+        "remind",
+        "Remind",
+        "Reminder command",
+        ".remind",
+        "https://github.com/test/repo",
+        "index.ts",
+        true
+      );
+
+      userService.installCommand(testUserId, testContactId, cmd.id, "myremind");
+
+      const state = await marketplaceHandler.buildInitialState(testUserId, testContactId);
+
+      const remindCmd = state.commands.find(c => c.slug === "remind");
+      expect(remindCmd?.installed).toBe(true);
     });
   });
 });

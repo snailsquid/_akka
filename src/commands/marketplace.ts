@@ -40,7 +40,7 @@ export class MarketplaceHandler {
 	): Promise<string> {
 		const allCommands = commandRegistry.getAllActiveCommands();
 		const userInstalls = userService.getUserInstallations(userId, contactId);
-		const installedSlugs = new Set(userInstalls.map((i) => i.userSlug));
+		const installedCommandIds = new Set(userInstalls.map((i) => i.commandId));
 
 		const totalPages = Math.ceil(allCommands.length / PAGE_SIZE) || 1;
 		const safePage = Math.max(1, Math.min(page, totalPages));
@@ -52,10 +52,8 @@ export class MarketplaceHandler {
 				cmd.developerUsername,
 				cmd.slug,
 			);
-			const installed = installedSlugs.has(cmd.slug);
+			const installed = installedCommandIds.has(cmd.id);
 			const prefix = installed ? "✅ " : "";
-			// 6.1 Display format: {slug} | {description}
-			// 6.2 Second line: {developer}/{repository}
 			return `${start + i + 1}. ${prefix}*${fullId}* — ${cmd.description}\n   _${cmd.repositoryName}_`;
 		});
 
@@ -275,7 +273,7 @@ export class MarketplaceHandler {
 	): Promise<MarketplaceState> {
 		const allCommands = commandRegistry.getAllActiveCommands();
 		const userInstalls = userService.getUserInstallations(userId, contactId);
-		const installedSlugs = new Set(userInstalls.map((i) => i.userSlug));
+		const installedCommandIds = new Set(userInstalls.map((i) => i.commandId));
 
 		const totalPages = Math.ceil(allCommands.length / PAGE_SIZE) || 1;
 		const pageCommands = allCommands.slice(0, PAGE_SIZE).map((cmd, i) => ({
@@ -285,7 +283,7 @@ export class MarketplaceHandler {
 			description: cmd.description,
 			slug: cmd.slug,
 			repositoryName: cmd.repositoryName,
-			installed: installedSlugs.has(cmd.slug),
+			installed: installedCommandIds.has(cmd.id),
 		}));
 
 		return { page: 1, totalPages, commands: pageCommands };

@@ -48,13 +48,12 @@ function getDeveloperFromContext(c: any) {
 		.get();
 }
 
-// ---- Auth: Initiate login — instant WhatsApp code ----
+const WHATSAPP_LOGIN_PHONE = process.env.WHATSAPP_LOGIN_PHONE || "+62 821-2838-3086";
+
 developerRoutes.post("/auth/init", async (c) => {
-	// Generate a short 6-character registration token
 	const token = generateShortToken();
 	const expiresAt = new Date(Date.now() + 10 * 60 * 1000).toISOString();
 
-	// Create the token (not linked to any developer yet)
 	db.insert(schema.registrationTokens)
 		.values({
 			token,
@@ -64,10 +63,10 @@ developerRoutes.post("/auth/init", async (c) => {
 		})
 		.run();
 
-	const waUrl = `https://wa.me/6281234567890?text=.login%20${token}`;
-	const phone = "+62 821-2838-3086";
+	const phone = WHATSAPP_LOGIN_PHONE.replace(/[^0-9]/g, "");
+	const waUrl = `https://wa.me/${phone}?text=.login%20${token}`;
 
-	return c.json({ token, waUrl, phone });
+	return c.json({ token, waUrl, phone: WHATSAPP_LOGIN_PHONE });
 });
 
 /**

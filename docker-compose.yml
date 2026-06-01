@@ -32,6 +32,7 @@ services:
 
   # Akka Platform — WhatsApp automation server
   akka:
+    build: .
     image: akka:latest
     container_name: akka
     restart: unless-stopped
@@ -41,9 +42,9 @@ services:
       - PORT=3000
       - WAHA_BASE_URL=http://waha:3000
       - WAHA_API_KEY=waha-api-key-2024
-      - WAHA_WEBHOOK_URL=http://akka:3000/api/sessions/{session}/webhook
+      - WAHA_WEBHOOK_URL=http://akka:3000/webhook
     volumes:
-      - akka-data:/app/data
+      - ./data:/app/data
     depends_on:
       waha:
         condition: service_started

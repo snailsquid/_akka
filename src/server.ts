@@ -14,7 +14,7 @@ app.use("*", cors());
 app.use("*", logger());
 
 // Health check
-app.get("/", (c) => c.json({ status: "ok", platform: "akka" }));
+app.get("/health", (c) => c.json({ status: "ok", platform: "akka" }));
 
 // API routes
 app.route("/webhook", webhookRouter);
@@ -84,5 +84,8 @@ app.use("/developer/*", serveFrontend(path.join(process.cwd(), "src/developer/st
 // Redirect /admin -> /admin/ and /developer -> /developer/
 app.get("/admin", (c) => c.redirect("/admin/"));
 app.get("/developer", (c) => c.redirect("/developer/"));
+
+// Serve landing page (must be last to catch all remaining routes)
+app.use("/*", serveFrontend(path.join(process.cwd(), "src/landing/static"), "/"));
 
 export default app;

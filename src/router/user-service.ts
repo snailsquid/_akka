@@ -150,7 +150,6 @@ export class UserService {
     commandId: number,
     userSlug: string
   ): InstallationRecord {
-    // Check if already installed
     const existing = db
       .select()
       .from(schema.installations)
@@ -174,19 +173,15 @@ export class UserService {
       };
     }
 
-    db.insert(schema.installations)
+    const installation = db
+      .insert(schema.installations)
       .values({
         userId,
         contactId,
         commandId,
         userSlug,
       })
-      .run();
-
-    const installation = db
-      .select()
-      .from(schema.installations)
-      .where(eq(schema.installations.id, db.select().from(schema.installations).all().at(-1)?.id || 0))
+      .returning()
       .get();
 
     if (!installation) {
@@ -206,8 +201,8 @@ export class UserService {
   /**
    * Uninstall a command by user slug
    */
-uninstallCommand(userId: number, contactId: number, userSlug: string): boolean {
-     db
+  uninstallCommand(userId: number, contactId: number, userSlug: string): boolean {
+     const result = db
        .delete(schema.installations)
        .where(
          and(
@@ -215,8 +210,9 @@ uninstallCommand(userId: number, contactId: number, userSlug: string): boolean {
            eq(schema.installations.contactId, contactId),
            eq(schema.installations.userSlug, userSlug)
          )
-       );
-     return true;
+       )
+       .run();
+     return result.changes > 0;
    }
 
   /**
@@ -300,17 +296,18 @@ uninstallCommand(userId: number, contactId: number, userSlug: string): boolean {
     newSlug: string
   ): boolean {
     const result = db
-.update(schema.installations)
-       .set({ userSlug: newSlug })
-       .where(
-         and(
-           eq(schema.installations.userId, userId),
-           eq(schema.installations.contactId, contactId),
-           eq(schema.installations.userSlug, oldSlug)
-         )
-       );
-   return true;
-   }
+      .update(schema.installations)
+      .set({ userSlug: newSlug })
+      .where(
+        and(
+          eq(schema.installations.userId, userId),
+          eq(schema.installations.contactId, contactId),
+          eq(schema.installations.userSlug, oldSlug)
+        )
+      )
+      .run();
+    return result.changes > 0;
+  }
 
    /**
     * Get all user slugs for a given user+contact pair

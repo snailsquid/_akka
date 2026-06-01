@@ -94,24 +94,41 @@ export default function LoginPage({
 		<div className="login-container">
 			<div className="login-card">
 				<div className="logo">🛠️</div>
-				<h1>Developer Dashboard</h1>
+				<h1>DEVELOPER DASHBOARD</h1>
 				<p className="subtitle">Register and manage your WhatsApp commands</p>
 
 				{error && <div className="error-message">{error}</div>}
 
 				{step === "loading" && (
 					<div style={{ textAlign: "center", padding: "2rem" }}>
-						<div style={{ fontSize: "2rem", marginBottom: "0.5rem" }}>⏳</div>
-						<p style={{ color: "#6b7280" }}>Generating your login code...</p>
+						<div style={{ fontSize: "3rem", marginBottom: "1rem" }}>⏳</div>
+						<p style={{ fontWeight: 700, fontSize: "1.125rem" }}>
+							Generating your login code...
+						</p>
 					</div>
 				)}
 
 				{step === "waiting" && (
 					<div style={{ textAlign: "center" }}>
-						<div style={{ marginBottom: "1.5rem" }}>
-							<div style={{ fontSize: "2rem", marginBottom: "0.5rem" }}>📱</div>
-							<h2 style={{ margin: 0 }}>Send login code from WhatsApp</h2>
-							<p style={{ color: "#6b7280", marginTop: "0.5rem" }}>
+						<div style={{ marginBottom: "2rem" }}>
+							<div style={{ fontSize: "3rem", marginBottom: "1rem" }}>📱</div>
+							<h2
+								style={{
+									margin: 0,
+									fontSize: "1.5rem",
+									fontWeight: 900,
+									textTransform: "uppercase",
+								}}
+							>
+								Send login code from WhatsApp
+							</h2>
+							<p
+								style={{
+									fontWeight: 700,
+									marginTop: "0.75rem",
+									fontSize: "1rem",
+								}}
+							>
 								Send the code below from your WhatsApp to verify your number.
 							</p>
 						</div>
@@ -122,29 +139,31 @@ export default function LoginPage({
 							rel="noopener noreferrer"
 							className="btn btn-primary"
 							style={{
-								display: "inline-block",
+								display: "inline-flex",
 								textDecoration: "none",
-								marginBottom: "1.5rem",
-								padding: "0.75rem 1.5rem",
+								marginBottom: "2rem",
 							}}
 						>
-							Open WhatsApp
+							OPEN WHATSAPP
 						</a>
 
 						<div
 							style={{
-								background: "#f3f4f6",
-								borderRadius: "8px",
-								padding: "1rem",
+								background: "var(--neo-muted)",
+								border: "var(--border-4)",
+								padding: "1.5rem",
 								marginTop: "1rem",
 								textAlign: "left",
+								boxShadow: "var(--shadow-sm)",
 							}}
 						>
 							<p
 								style={{
-									margin: "0 0 0.5rem 0",
+									margin: "0 0 1rem 0",
 									fontSize: "0.875rem",
-									color: "#6b7280",
+									fontWeight: 700,
+									textTransform: "uppercase",
+									letterSpacing: "0.05em",
 								}}
 							>
 								Can't open the link? Send this code to {waPhone} on WhatsApp:
@@ -152,11 +171,11 @@ export default function LoginPage({
 							<code
 								style={{
 									display: "block",
-									padding: "0.75rem",
-									background: "#fff",
-									borderRadius: "4px",
+									padding: "1rem",
+									background: "var(--neo-white)",
+									border: "var(--border-2)",
 									fontSize: "1.5rem",
-									fontWeight: "bold",
+									fontWeight: 900,
 									textAlign: "center",
 									letterSpacing: "0.2em",
 									userSelect: "all",
@@ -166,8 +185,16 @@ export default function LoginPage({
 							</code>
 						</div>
 
-						<div style={{ marginTop: "1rem" }}>
-							<p style={{ fontSize: "0.8rem", color: "#9ca3af" }}>
+						<div style={{ marginTop: "1.5rem" }}>
+							<p
+								style={{
+									fontSize: "0.75rem",
+									fontWeight: 700,
+									opacity: 0.7,
+									textTransform: "uppercase",
+									letterSpacing: "0.05em",
+								}}
+							>
 								Code expires in 10 minutes. This page will update automatically.
 							</p>
 						</div>
@@ -176,10 +203,25 @@ export default function LoginPage({
 
 				{step === "awaiting_username" && (
 					<div style={{ textAlign: "center" }}>
-						<div style={{ marginBottom: "1.5rem" }}>
-							<div style={{ fontSize: "2rem", marginBottom: "0.5rem" }}>✍️</div>
-							<h2 style={{ margin: 0 }}>Choose your username</h2>
-							<p style={{ color: "#6b7280", marginTop: "0.5rem" }}>
+						<div style={{ marginBottom: "2rem" }}>
+							<div style={{ fontSize: "3rem", marginBottom: "1rem" }}>✍️</div>
+							<h2
+								style={{
+									margin: 0,
+									fontSize: "1.5rem",
+									fontWeight: 900,
+									textTransform: "uppercase",
+								}}
+							>
+								Choose your username
+							</h2>
+							<p
+								style={{
+									fontWeight: 700,
+									marginTop: "0.75rem",
+									fontSize: "1rem",
+								}}
+							>
 								Reply with your desired username on WhatsApp to complete
 								registration.
 							</p>
@@ -187,20 +229,37 @@ export default function LoginPage({
 
 						<div
 							style={{
-								background: "#f3f4f6",
-								borderRadius: "8px",
-								padding: "1rem",
+								background: "var(--neo-muted)",
+								border: "var(--border-4)",
+								padding: "1.5rem",
 								marginTop: "1rem",
+								boxShadow: "var(--shadow-sm)",
 							}}
 						>
-							<p style={{ margin: 0, fontSize: "0.875rem", color: "#6b7280" }}>
+							<p
+								style={{
+									margin: 0,
+									fontSize: "0.875rem",
+									fontWeight: 700,
+									textTransform: "uppercase",
+									letterSpacing: "0.05em",
+								}}
+							>
 								Check your WhatsApp messages from {waPhone} and reply with your
 								username.
 							</p>
 						</div>
 
-						<div style={{ marginTop: "1rem" }}>
-							<p style={{ fontSize: "0.8rem", color: "#9ca3af" }}>
+						<div style={{ marginTop: "1.5rem" }}>
+							<p
+								style={{
+									fontSize: "0.75rem",
+									fontWeight: 700,
+									opacity: 0.7,
+									textTransform: "uppercase",
+									letterSpacing: "0.05em",
+								}}
+							>
 								This page will update automatically when you complete
 								registration.
 							</p>
@@ -210,17 +269,32 @@ export default function LoginPage({
 
 				{step === "expired" && (
 					<div style={{ textAlign: "center" }}>
-						<div style={{ fontSize: "2rem", marginBottom: "0.5rem" }}>⏰</div>
-						<h2 style={{ margin: 0 }}>Code expired</h2>
-						<p style={{ color: "#6b7280", marginTop: "0.5rem" }}>
+						<div style={{ fontSize: "3rem", marginBottom: "1rem" }}>⏰</div>
+						<h2
+							style={{
+								margin: 0,
+								fontSize: "1.5rem",
+								fontWeight: 900,
+								textTransform: "uppercase",
+							}}
+						>
+							Code expired
+						</h2>
+						<p
+							style={{
+								fontWeight: 700,
+								marginTop: "0.75rem",
+								fontSize: "1rem",
+							}}
+						>
 							Your login code has expired. Please generate a new one.
 						</p>
 						<button
 							className="btn btn-secondary"
 							onClick={handleRetry}
-							style={{ marginTop: "1rem" }}
+							style={{ marginTop: "1.5rem" }}
 						>
-							Generate New Code
+							GENERATE NEW CODE
 						</button>
 					</div>
 				)}

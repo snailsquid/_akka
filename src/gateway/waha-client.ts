@@ -26,31 +26,48 @@ export class WahaClient implements IWahaClient {
   }
 
   /**
+   * Serial send queue — ensures outbound messages are spaced 500ms apart
+   * to avoid triggering WhatsApp anti-spam thresholds on ordinary accounts.
+   */
+  private sendQueue: Promise<unknown> = Promise.resolve();
+  private static readonly SEND_INTERVAL_MS = 500;
+
+  /**
    * Send a text message to a WhatsApp chat
    */
   async sendMessage(chatId: string, text: string): Promise<{ messageId: string }> {
-    try {
-      const response = await fetch(`${this.baseUrl}/api/sendText`, {
-        method: "POST",
-        headers: this.getHeaders(),
-        body: JSON.stringify({
-          chatId,
-          text,
-          session: this.sessionId,
-        }),
-      });
+    const task = async (): Promise<{ messageId: string }> => {
+      try {
+        const response = await fetch(`${this.baseUrl}/api/sendText`, {
+          method: "POST",
+          headers: this.getHeaders(),
+          body: JSON.stringify({
+            chatId,
+            text,
+            session: this.sessionId,
+          }),
+        });
 
-      if (!response.ok) {
-        console.error(`[WahaClient] sendMessage failed: ${response.status} ${response.statusText}`);
-        throw new Error(`Failed to send message: ${response.statusText}`);
+        if (!response.ok) {
+          console.error(`[WahaClient] sendMessage failed: ${response.status} ${response.statusText}`);
+          throw new Error(`Failed to send message: ${response.statusText}`);
+        }
+
+        const result = await response.json() as { id?: string; messageId?: string };
+        return { messageId: result.id || result.messageId || "" };
+      } catch (error) {
+        console.error(`[WahaClient] sendMessage error:`, error);
+        throw error;
       }
+    };
 
-      const result = await response.json() as { id?: string; messageId?: string };
-      return { messageId: result.id || result.messageId || "" };
-    } catch (error) {
-      console.error(`[WahaClient] sendMessage error:`, error);
-      throw error;
-    }
+    const next = this.sendQueue
+      .catch(() => undefined)
+      .then(() => new Promise<void>((resolve) => setTimeout(resolve, WahaClient.SEND_INTERVAL_MS)))
+      .then(task);
+
+    this.sendQueue = next;
+    return next;
   }
 
   /**

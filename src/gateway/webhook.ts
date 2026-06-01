@@ -3,6 +3,8 @@ import { db, schema } from "../db";
 import { eq } from "drizzle-orm";
 import type { WebhookPayload } from "../types";
 import { router } from "../router";
+import { dedupStore } from "./dedup-store";
+import { rateLimitedLog } from "./rate-limited-logger";
 
 export const webhookRouter = new Hono();
 
@@ -77,6 +79,18 @@ export async function handleWebhookEvent(event: WahaWebhookEvent): Promise<void>
   if (me && participantJid === me) {
     return;
   }
+
+  // Webhook-level dedup: suppress WAHA replays of the same (sessionId, messageId)
+  // before any work happens. The check is synchronous and the mark is applied
+  // before fire-and-forget processing.
+  if (dedupStore.has(sessionId, messageId)) {
+    rateLimitedLog(
+      `dedup-hit:${sessionId}`,
+     	`[Webhook] dedup-hit suppressed sessionId=${sessionId} messageId=${messageId}`,
+    );
+    return;
+  }
+  dedupStore.mark(sessionId, messageId);
 
   const contact = await getContactBySession(sessionId);
   if (!contact) {
