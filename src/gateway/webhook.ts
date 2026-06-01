@@ -155,47 +155,6 @@ webhookRouter.post("/", async (c) => {
   }
 });
 
-// Handle any POST request to /webhook (including /webhook., /webhook/, etc.)
-webhookRouter.all("*", async (c) => {
-  console.log("hit")
-  // Only handle POST requests
-  if (c.req.method !== "POST") {
-    return c.json({ status: "method not allowed" }, 405);
-  }
-  
-  try {
-    const body = await c.req.json<WahaWebhookEvent>();
-
-    if (!body.event || !body.session) {
-      return c.json({ status: "invalid payload" }, 400);
-    }
-
-    handleWebhookEvent(body).catch((error) => {
-      console.error("[Webhook] Async error:", error);
-    });
-
-    return c.json({ status: "ok" });
-  } catch (error) {
-    return c.json({ status: "error parsing body" }, 400);
-  }
-});
-
-webhookRouter.post("/", async (c) => {
-  console.log("hit2")
-  try {
-    const body = await c.req.json<WahaWebhookEvent>();
-    if (!body.event || !body.session) {
-      return c.json({ status: "invalid payload" }, 400);
-    }
-    handleWebhookEvent(body).catch((error) => {
-      console.error("[Webhook] Async error:", error);
-    });
-    return c.json({ status: "ok" });
-  } catch (error) {
-    return c.json({ status: "error parsing body" }, 400);
-  }
-});
-
 /**
  * GET /webhook - Health check for webhook endpoint
  */

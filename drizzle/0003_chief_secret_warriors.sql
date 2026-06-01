@@ -1,0 +1,1 @@
+ALTER TABLE `registration_tokens` ADD `jid` text;

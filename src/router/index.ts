@@ -1,6 +1,6 @@
 import { db, schema } from "../db";
 import { eq, and, gt } from "drizzle-orm";
-import type { WebhookPayload, ConversationFlow, UserRecord } from "../types";
+import type { WebhookPayload, ConversationFlow } from "../types";
 import { userService } from "./user-service";
 import { WahaClient } from "../gateway/waha-client";
 import { getSessionManager } from "../gateway/session-manager";
@@ -421,7 +421,11 @@ export class Router {
 		);
 
 		// Execute in sandbox
-		const result = await commandExecutor.executeCommand(source, command.slug, ctx);
+		const result = await commandExecutor.executeCommand(
+			source,
+			command.slug,
+			ctx,
+		);
 		if (!result.success && result.error) {
 			await client.sendMessage(senderJid, `❌ ${result.error}`);
 		}
@@ -435,7 +439,7 @@ export class Router {
 	private async handleFlowMessage(
 		client: WahaClient,
 		senderJid: string,
-		messageId: string,
+		_messageId: string,
 		body: string,
 		userId: number,
 		contactId: number,
@@ -512,6 +516,64 @@ export class Router {
 			this.endFlow(flow.id);
 			await client.sendMessage(senderJid, result.message);
 			return { consumed: false, active: false };
+		}
+
+		// Developer signup flow
+		if (flow.flowType === "developer_signup") {
+			const data = flow.data as Record<string, unknown>;
+			const { developerId } = data as { developerId: number };
+
+			// User replied with their desired username
+			const username = body.trim();
+
+			// Validate username format (alphanumeric, hyphens, underscores)
+			if (!/^[a-zA-Z0-9_-]+$/.test(username)) {
+				await client.sendMessage(
+					senderJid,
+					"❌ Invalid username. Please use only letters, numbers, hyphens, and underscores.\n\nReply with your desired username:",
+				);
+				return { consumed: true, active: true };
+			}
+
+			// Check if username is already taken
+			const existingDev = db
+				.select()
+				.from(schema.developers)
+				.where(eq(schema.developers.username, username))
+				.get();
+
+			if (existingDev && existingDev.id !== developerId) {
+				await client.sendMessage(
+					senderJid,
+					`❌ Username @${username} is already taken. Please choose a different one:\n\nReply with your desired username:`,
+				);
+				return { consumed: true, active: true };
+			}
+
+			// Update developer's username
+			db.update(schema.developers)
+				.set({ username })
+				.where(eq(schema.developers.id, developerId))
+				.run();
+
+			// Create session
+			const sessionToken = `sess_${crypto.randomUUID().replace(/-/g, "")}`;
+			db.insert(schema.sessions)
+				.values({
+					token: sessionToken,
+					developerId,
+				})
+				.run();
+
+			// End flow
+			this.endFlow(flow.id);
+
+			await client.sendMessage(
+				senderJid,
+				`✅ Welcome to the Developer Dashboard, @${username}!\n\nYou can now access your dashboard and start registering WhatsApp commands.`,
+			);
+
+			return { consumed: true, active: false };
 		}
 
 		// Unknown flow type — cancel, re-process as command
